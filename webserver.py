@@ -182,13 +182,25 @@ def challenge3():
 
 @app.route("/4/<string:randomPath>",methods = ['GET'])
 def challenge4(randomPath):
-    length = len(request.url)
-    response = generateResponse("Request successfully received.")
-    if length % 3 == 0 or length % 4 == 0:
-        secret = { 'secret_key': '123456789' }
-        response.headers.set('Secret', 'you-are-not-supposed-to-see-this')
-    
-    return response 
+
+    if 'start' in request.url:
+        response = '<html>\n'
+        for i in range(1,100):
+            eachiFrame = "<iframe src=\"http://127.0.0.1:5000/4/" + "a"*i 
+            eachiFrame = eachiFrame + "\"></iframe>\n"
+            response = response + eachiFrame 
+        
+        response = response + '</html>'
+
+        return response
+
+    else:   
+        length = len(request.url)
+        response = generateResponse("Request successfully received.")
+        if length % 3 == 0 or length % 4 == 0:
+            response.headers.set('Secret', 'you-are-not-supposed-to-see-this')
+        
+        return response 
     
 
 @app.errorhandler(404)
