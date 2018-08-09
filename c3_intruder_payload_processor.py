@@ -40,7 +40,7 @@ class BurpExtender(IBurpExtender, IIntruderPayloadGeneratorFactory, IIntruderPay
     # implement IIntruderPayloadGeneratorFactory
     #
     def getGeneratorName(self):
-        return "Intruder Payload Generator"
+        return "C3 Intruder Payload Generator"
 
     def createNewInstance(self, attack):
         # return a new IIntruderPayloadGenerator to generate payloads for this attack
@@ -50,7 +50,7 @@ class BurpExtender(IBurpExtender, IIntruderPayloadGeneratorFactory, IIntruderPay
     # implement IIntruderPayloadProcessor
     #
     def getProcessorName(self):
-        return "Encode Payload"
+        return "C3 Encode Payload"
 
     def processPayload(self,currentPayload, originalPayload, baseValue):
         # work on transform current payload in the payload list
@@ -70,13 +70,35 @@ class IntruderPayloadGenerator(IIntruderPayloadGenerator):
         self._extender = extender
         self._helpers = extender._helpers
         self._payloadIndex = 0
+        self._baseList = ["userid=1", "location=http://127.0.0.1:5000/3/","browser=Gecko"]
+        self._baseIndex = 0
 
     def hasMorePayloads(self):
         return self._payloadIndex < len(PAYLOADS)
 
+    # make an index for the decoded internal parameters
+    # manually rebuild the request with payload inserted 
+    # only move payload index when all internal parameters have been subbed in before
     def getNextPayload(self, baseValue):
-        payload = PAYLOADS[self._payloadIndex]
-        self._payloadIndex = self._payloadIndex + 1
+        
+        payload = ""
+        baseLength = len(self._baseList)
+        for i in range(baseLength):
+            if i == self._baseIndex:
+                name = self._baseList[i].split('=')[0]
+                payload += name + "=" + PAYLOADS[self._payloadIndex]
+
+            else:
+                payload += self._baseList[i]
+
+            if i != (baseLength - 1):
+                payload += "!!!"
+        
+        self._baseIndex += 1
+
+        if self._baseIndex == 3 :
+            self._payloadIndex = self._payloadIndex + 1
+            self._baseIndex = 0            
 
         return payload
 
