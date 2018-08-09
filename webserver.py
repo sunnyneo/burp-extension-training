@@ -5,11 +5,10 @@ from flask import jsonify
 from threading import Lock
 import uuid
 import base64
-from urllib.parse import urlparse
+from urllib.parse import unquote
 import json
 
 app = Flask(__name__)
-requestCounter = 0
 tokens = []
 tokens_lock = Lock()
 
@@ -29,9 +28,10 @@ def hello():
     '''
 
 #custom header and token reset every 5 requests
+#Error message for request without valid token
 @app.route("/1/")
 def challenge1():
-    global requestCounter
+    requestCounter = 0
     inputToken = request.headers.get('secret-token')
     if inputToken is None or not inputToken in tokens:
         print(tokens)
@@ -53,25 +53,38 @@ def challenge2():
     if request.method == 'GET':
         return '''<html>
             <script>
-                function encodeInput() {
-                    var input = document.getElementById("userid").value;
-                    var inputJSON = JSON.stringify({ "userid": input });
-                    var encodedInput = btoa(inputJSON);
-                    return encodedInput;
-                }
                 function submit() {
-                    var data = encodeInput();
-                    console.log(data);
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/2/", true);
-                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send("input=" + encodeURIComponent(data));
+
+                    var input = document.getElementById("userid").value;
+                    if (isNaN(input) || input > 10) {
+                        document.getElementById("response").innerText = "Only User ID 1- 10. Try again.";
+                    }
+                    else {
+                        var data = btoa(input);
+                        console.log(data);
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                              document.getElementById("response").innerText =
+                              this.responseText;
+                            }
+                        };
+                        xhttp.open("POST", "/2/", true);
+                        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xhttp.send("input=11" + encodeURIComponent(data) + "&browser=" + navigator.product);
+                    }
+
                 }
             </script>
             <title>Challenge 2</title>
-                UserID: <input type="text" id="userid"><br>
-                <button type="button" onclick="submit()">Submit</button>
-
+           <div id="body">
+                <div id="response">
+                </div>
+                <div id="userinput">
+                    UserID: <input type="text" id="userid"><br>
+                    <button type="button" onclick="submit()">Submit</button>
+                </div>
+            </div>
         </html>'''
     
     #POST Request
@@ -79,8 +92,7 @@ def challenge2():
     #Check whether data is URL Encoded
     elif request.method == 'POST':
        
-        getBody = request.get_data()
-        
+        getBody = request.get_data().decode('utf-8')
         parameters = getBody.split('&')
 
         try: 
@@ -91,16 +103,17 @@ def challenge2():
 
             if getInput is None:
                raise ValueError("Empty Input!")
-
-            elif "=" in getInput:
-                raise ValueError("Input not URL Encoded!")
             
             else:
-                urlInput = urlparse(getInput)
-                b64Input = base64.b64decode(urlInput)
-                jsonInput = json.loads(b64Input)
-   
-                return generateResponse("Request successfully received.", jsonInput)
+                urldInput = unquote(getInput[2:len(getInput)])
+                b64dInput = base64.b64decode(urldInput).decode('utf-8')
+                recvData = {'data:' : b64dInput}
+
+                # print("urlInput: " + urldInput)
+                # print("base64Input: " + b64dInput)
+                print("recvData: " + str(recvData))
+
+                return generateResponse("Request successfully received.", recvData)
             
         #Can't parse the data
         except Exception as e:
@@ -117,25 +130,42 @@ def challenge3():
     if request.method == 'GET':
         return '''<html>
             <script>
-                function encodeInput() {
-                    var userid = document.getElementById("userid").value;
+                function encodeInput(userid) {
                     var allInput = "userid=" + userid + "!!!location=" + window.location.href + "!!!browser=" + navigator.product;
                     var encodedInput = btoa(allInput);
                     return encodedInput;
                 }
                 function submit() {
-                    var data = encodeInput();
-                    console.log(data);
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/3/", true);
-                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send("input=" + encodeURIComponent(data));
+                    var userid = document.getElementById("userid").value;
+
+                    if (isNaN(userid) || userid > 10) {
+                        document.getElementById("response").innerText = "Only User ID 1- 10. Try again.";
+                    }
+                    else {
+                        var data = encodeInput(userid);
+                        console.log(data);
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                              document.getElementById("response").innerText =
+                              this.responseText;
+                            }
+                        };
+                        xhttp.open("POST", "/3/", true);
+                        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xhttp.send("input=" + encodeURIComponent(data));
+                    }      
                 }
             </script>
             <title>Challenge 3</title>
-                UserID: <input type="text" id="userid"><br>
-                <button type="button" onclick="submit()">Submit</button>
-
+           <div id="body">
+                <div id="response">
+                </div>
+                <div id="userinput">
+                    UserID: <input type="text" id="userid"><br>
+                    <button type="button" onclick="submit()">Submit</button>
+                </div>
+            </div>
         </html>'''
     
     #POST Request
@@ -143,7 +173,7 @@ def challenge3():
     #Check whether data is URL Encoded
     elif request.method == 'POST':
        
-        getBody = request.get_data()
+        getBody = request.get_data().decode('utf-8')
         parameters = getBody.split('&')
 
         try: 
@@ -154,21 +184,20 @@ def challenge3():
 
             if getInput is None:
                raise ValueError("Empty Input!")
-
-            elif "=" in getInput:
-                raise ValueError("Input not URL Encoded!")
             
             else:
-                urlInput = urlparse(getInput)
-                b64Input = base64.b64decode(urlInput)
+                urlInput = unquote(getInput)
+                b64Input = base64.b64decode(urlInput).decode('utf-8')
                 
-                print(b64Input) 
+                print("getInput: " + getInput)
+                print("urlInput: " + urlInput)
+                print("base64Input: " + b64Input)
 
                 reconstructInput = {}
 
                 innerParameters = b64Input.split('!!!')
                 for innerParam in innerParameters:
-                    key,value = innerParam.split('=')
+                    key,value = innerParam.split('=', 1)
                     reconstructInput.update({key : value})
 
                 print(str(reconstructInput))
