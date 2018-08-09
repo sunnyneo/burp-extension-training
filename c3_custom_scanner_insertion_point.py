@@ -1,4 +1,5 @@
-# Reference
+# References
+# https://github.com/PortSwigger/example-custom-scan-insertion-points/
 # https://github.com/PortSwigger/example-custom-scan-insertion-points/blob/master/python/CustomScanInsertionPoint.py
 from burp import IBurpExtender
 from burp import IScannerInsertionPointProvider
@@ -11,7 +12,6 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
     #
     # implement IBurpExtender
     #
-    
     def registerExtenderCallbacks(self, callbacks):
         
         self._extensionName = "C3 Custom Insertion Points"
@@ -19,6 +19,9 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
         # set the parameter that you are interested in
         # probably can build a UI to set some options/parameter names   
         self._keyParameter  = "input"
+
+        # delimiter between parameter and value "=" or what
+        self._delimiter = "!!!"
 
         # obtain an extension helpers object
         self._helpers = callbacks.getHelpers()
@@ -36,7 +39,6 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
     # 
     # implement IScannerInsertionPointProvider
     #
-    
     def getInsertionPoints(self, baseRequestResponse):
         
         # retrieve the parameter
@@ -56,7 +58,7 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
 
             baseValue = self._helpers.bytesToString(self._helpers.base64Decode(self._helpers.urlDecode(parameterValue)))
 
-            for eachParam in baseValue.split('!!!'):
+            for eachParam in baseValue.split(self._delimiter):
                 eachParamName, eachParamValue = eachParam.split('=')
 
                 insertionPoints.append(InsertionPoint(self._helpers,
@@ -64,26 +66,28 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
                                                 self._keyParameter,   
                                                 baseValue,
                                                 eachParamName,
-                                                eachParamValue))
+                                                eachParamValue,
+                                                self._delimiter))
 
             return insertionPoints
         
 # 
 # class implementing IScannerInsertionPoint
 #
-
 class InsertionPoint(IScannerInsertionPoint):
 
     def __init__(self, helpers, baseRequest,
             keyParameter,
             baseValue, 
             parameterName, 
-            parameterValue):
+            parameterValue,
+            delimiter):
 
         self._helpers = helpers
         self._baseRequest = baseRequest
         self._keyParameter = keyParameter
         self._baseValue = baseValue
+        self._delimiter = delimiter
         
         '''
         # URL- and base64-decode the data
@@ -95,7 +99,7 @@ class InsertionPoint(IScannerInsertionPoint):
 
         # len(parameterName) + 1 to include "=" 
         start = baseValue.find(parameterName) + len(parameterName) + 1
-        end = baseValue.find("!!!", start)
+        end = baseValue.find(self._delimiter, start)
         
         if (end == -1):
             end = len(baseValue)
@@ -110,7 +114,6 @@ class InsertionPoint(IScannerInsertionPoint):
     # 
     # implement IScannerInsertionPoint
     #
-    
     def getInsertionPointName(self):
         return "Base64-wrapped input"
 

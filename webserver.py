@@ -3,10 +3,10 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from threading import Lock
-import uuid
-import base64
 from urllib.parse import unquote
 import json
+import uuid
+import base64
 
 app = Flask(__name__)
 tokens = []

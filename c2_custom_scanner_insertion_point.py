@@ -1,4 +1,4 @@
-# Reference
+# References
 # https://portswigger.net/blog/sample-burp-suite-extension-custom-scan-insertion-points
 # https://github.com/PortSwigger/example-custom-scan-insertion-points/blob/master/python/CustomScanInsertionPoint.py
 from burp import IBurpExtender
@@ -13,7 +13,6 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
     #
     # implement IBurpExtender
     #
-
     def	registerExtenderCallbacks(self, callbacks):
         
         self._extensionName = "C2 Custom Insertion Points"
@@ -37,7 +36,6 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
     # 
     # implement IScannerInsertionPointProvider
     #
-    
     def getInsertionPoints(self, baseRequestResponse):
         
         # retrieve the data parameter and 
@@ -67,7 +65,6 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
 # 
 # class implementing IScannerInsertionPoint
 #
-
 class InsertionPoint(IScannerInsertionPoint):
 
     def __init__(self, helpers, baseRequest, parameterName, parameterValue):

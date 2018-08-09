@@ -1,4 +1,5 @@
-# Reference
+# References
+# https://github.com/PortSwigger/example-custom-editor-tab/
 # https://github.com/PortSwigger/example-custom-editor-tab/blob/master/python/CustomEditorTab.py 
 # https://github.com/securityMB/burp-exceptions
 # Modified by Sunny Neo
@@ -12,6 +13,7 @@ import datetime
 
 class BurpExtender(IBurpExtender, IMessageEditorTabFactory):     
     
+    #
     # Implement IBurpExtender Methods
     #
     def registerExtenderCallbacks(self, callbacks):
@@ -43,7 +45,9 @@ class BurpExtender(IBurpExtender, IMessageEditorTabFactory):
         # create a new instance of our custom editor tab
         return CustomTab(self, controller, editable)
 
-
+# 
+# class implementing IMessageEditorTab
+#
 class CustomTab(IMessageEditorTab):
 
     def __init__(self, extender, controller, editable):
@@ -62,6 +66,9 @@ class CustomTab(IMessageEditorTab):
         # get parameterName defined in BurpExtender
         self._parameterName = extender._parameterName
 
+    #
+    # implement IMessageEditorTab
+    #
     def getTabCaption(self):
         # returns the name of the custom tab
         return "Decoded Tab"
