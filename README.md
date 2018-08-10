@@ -56,3 +56,20 @@ http://127.0.0.1:5000/4/start
 
 ### Objective
 Develop a passive scanner extension to flag out all the URLs with "secret" header in the response so that all the affected URLs can be exported from Burp to a report writing tool 
+
+## References
+All the codes here are based on the codes shared on PortSwigger Github repository. 
+```
+https://github.com/PortSwigger/
+https://github.com/PortSwigger/example-custom-editor-tab/
+https://github.com/PortSwigger/example-custom-scan-insertion-points/
+https://github.com/PortSwigger/example-intruder-payloads
+https://github.com/PortSwigger/ssl-scanner
+
+```
+
+## Other References
+```
+https://www.twelvesec.com/2017/05/05/authorization-token-manipulation/
+https://github.com/securityMB/burp-exceptions/
+```

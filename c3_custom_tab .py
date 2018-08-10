@@ -2,8 +2,7 @@
 # https://github.com/PortSwigger/example-custom-editor-tab/
 # https://github.com/PortSwigger/example-custom-editor-tab/blob/master/python/CustomEditorTab.py 
 # https://github.com/securityMB/burp-exceptions
-# Modified by Sunny Neo
-# 
+ 
 from burp import IBurpExtender              
 from burp import IMessageEditorTab          
 from burp import IMessageEditorTabFactory    

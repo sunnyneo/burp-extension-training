@@ -1,9 +1,8 @@
 # References
-# https://www.twelvesec.com/2017/05/05/authorization-token-manipulation/ 
 # https://github.com/PortSwigger/example-custom-session-tokens/
 # https://github.com/PortSwigger/example-custom-session-tokens/blob/master/python/SessionTokens.py
+# https://www.twelvesec.com/2017/05/05/authorization-token-manipulation/ 
 # https://github.com/securityMB/burp-exceptions
-
 
 from exceptions_fix import FixBurpExceptions
 import json

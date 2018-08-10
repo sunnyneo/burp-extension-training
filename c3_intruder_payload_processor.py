@@ -1,6 +1,7 @@
 # References
 # https://github.com/PortSwigger/example-intruder-payloads/blob/master/python/IntruderPayloads.py
 # https://github.com/PortSwigger/example-intruder-payloads
+
 from burp import IBurpExtender
 from burp import IIntruderPayloadGeneratorFactory
 from burp import IIntruderPayloadProcessor

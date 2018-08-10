@@ -2,7 +2,7 @@
 # https://github.com/PortSwigger/example-scanner-checks/
 # https://github.com/PortSwigger/example-scanner-checks/blob/master/python/CustomScannerChecks.py
 # https://github.com/PortSwigger/ssl-scanner/blob/master/burp-ssl-scanner.py
-# 
+
 
 from burp import IBurpExtender
 from burp import IScannerCheck
