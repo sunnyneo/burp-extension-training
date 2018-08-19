@@ -53,15 +53,14 @@ class BurpExtender(IBurpExtender, IIntruderPayloadProcessor, IIntruderPayloadGen
         return self._extensionName
 
     def processPayload(self,currentPayload, originalPayload, baseValue):
+        # todo: 
         # baseValue is the original value in the request
-        # process current payload in the payload list
+        # encode current payload in the payload list
 
         payload = currentPayload
-        
-        encodedPayload = self._helpers.urlEncode("11" +
-            self._helpers.base64Encode(self._helpers.bytesToString(payload)));
 
-        return encodedPayload
+
+        return TODO
 
 #
 # class to generate payloads from a simple list
@@ -72,9 +71,11 @@ class IntruderPayloadGenerator(IIntruderPayloadGenerator):
         self._helpers = extender._helpers
         self._payloadIndex = 0
 
+    # Check if there is any more payload in the list
     def hasMorePayloads(self):
         return self._payloadIndex < len(PAYLOADS)
 
+    # get the payload in the list for each iteration
     def getNextPayload(self, baseValue):
         payload = PAYLOADS[self._payloadIndex]
         self._payloadIndex = self._payloadIndex + 1

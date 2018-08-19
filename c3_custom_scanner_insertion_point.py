@@ -16,12 +16,12 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
         
         self._extensionName = "C3 Custom Insertion Points"
 
-        # set the parameter that you are interested in
+        # todo: set the parameter that you are interested in
         # probably can build a UI to set some options/parameter names   
-        self._keyParameter  = "input"
+        self._keyParameter  = "TODO"
 
-        # delimiter between parameter and value "=" or what
-        self._delimiter = "!!!"
+        # todo: set delimiter between parameter and value "=" or what
+        self._delimiter = "TODO"
 
         # obtain an extension helpers object
         self._helpers = callbacks.getHelpers()
@@ -52,11 +52,11 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
         else:
             # if the parameter is present, add a single custom insertion point for it
             # keyParameter is the parameter we extracted the encoded value from
-            # todo parse encoded parameter and add insertionpoint based on parameters found
-            # baseValue is the decoded list of parameters  
+            # todo: parse encoded parameter and add insertionpoint based on parameters found
+
             print("Executing Insertion Point")
 
-            baseValue = self._helpers.bytesToString(self._helpers.base64Decode(self._helpers.urlDecode(parameterValue)))
+            baseValue = self._helpers.bytesToString(TODO)
 
             for eachParam in baseValue.split(self._delimiter):
                 eachParamName, eachParamValue = eachParam.split('=')
@@ -76,6 +76,7 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
 #
 class InsertionPoint(IScannerInsertionPoint):
 
+    # todo: read the constructor
     def __init__(self, helpers, baseRequest,
             keyParameter,
             baseValue, 
@@ -88,14 +89,6 @@ class InsertionPoint(IScannerInsertionPoint):
         self._keyParameter = keyParameter
         self._baseValue = baseValue
         self._delimiter = delimiter
-        
-        '''
-        # URL- and base64-decode the data
-        dataParameter = helpers.bytesToString(helpers.base64Decode(helpers.urlDecode(dataParameter)))
-
-        # parse the location of the input string within the decoded data
-        print("dataParameter:" + dataParameter)
-        '''
 
         # len(parameterName) + 1 to include "=" 
         start = baseValue.find(parameterName) + len(parameterName) + 1
@@ -126,8 +119,8 @@ class InsertionPoint(IScannerInsertionPoint):
 
         insertValue = self._insertionPointPrefix + self._helpers.bytesToString(payload) + self._insertionPointSuffix;
 
-        # Base64- and URL-encode the data
-        encodedInsertValue = self._helpers.urlEncode(self._helpers.base64Encode(insertValue));
+        # todo: Base64- and URL-encode the data
+        encodedInsertValue = TODO
         
         print("Insert Value: " + insertValue.encode('utf8'))
         # update the request with the new parameter value

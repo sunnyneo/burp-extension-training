@@ -16,9 +16,9 @@ class BurpExtender(IBurpExtender, IScannerInsertionPointProvider):
     def	registerExtenderCallbacks(self, callbacks):
         
         self._extensionName = "C2 Custom Insertion Points"
-        # set the parameter that you are interested in
+        # todo: set the parameter that you are interested in
         # probably can build a UI to set some options/parameter names   
-        self._parameterName  = "input"
+        self._parameterName  = "TODO"
 
         # obtain an extension helpers object
         self._helpers = callbacks.getHelpers()
@@ -84,11 +84,10 @@ class InsertionPoint(IScannerInsertionPoint):
         # build the raw data using the specified payload
         # print("---Build Request---")
 
-        # Dodgy encoding 11 + Base64- and URL-encode the data
-        encodedPayload = self._helpers.urlEncode("11" +
-            self._helpers.base64Encode(self._helpers.bytesToString(payload)));
+        # todo: Dodgy encoding 11 + Base64- and URL-encode the data
+        encodedPayload = TODO(payload)
         
-        # update the request with the new parameter value 
+        # todo: update the request with the new parameter value 
         # PARAM_BODY - Used to indicate a parameter within the message body.
         # PARAM_COOKIE - Used to indicate an HTTP cookie.
         # PARAM_JSON -  Used to indicate an item of data within a JSON structure.

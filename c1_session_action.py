@@ -48,7 +48,6 @@ class BurpExtender(IBurpExtender, ISessionHandlingAction):
         
         # get response body for the macro issued request
         macro_response_info = self._helpers.analyzeResponse(macroItems[0].getResponse())
-
         macro_msg = macroItems[0].getResponse()
         resp_body = macro_msg[macro_response_info.getBodyOffset():]
         macro_body_string = self._helpers.bytesToString(resp_body)
@@ -58,26 +57,19 @@ class BurpExtender(IBurpExtender, ISessionHandlingAction):
 
         print('Macro Response Body: %s',login_resp)
 
-        # get token
-        token = login_resp["new_token"]
+        # todo: get token
         
         # retrieve headers in current request and 
         # reconstruct it with token value
         req_headers = request_info.getHeaders()
         req_body = currentRequest.getRequest()[request_info.getBodyOffset():]
           
-        for eachHeader in req_headers:
-            if 'secret-token' in eachHeader:
-                 req_headers.remove(eachHeader)
-                 break
+        # todo - remove existing header/value in request
        
-        req_headers.add('secret-token: ' + token)        
+        # add header and value to request 
+        req_headers.add(TODO)        
 
-        print('Header Checked at time :  {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))        
-        print("-----------------------------------------------------------------"        )
-        print("Adding new header - secret-token: " + token)                
-        print("-----------------------------------------------------------------")                
-        print("Getting authorized..done\n\n")                
+        
         
         # build request with bypass headers        
         message = self._helpers.buildHttpMessage(req_headers, req_body)    

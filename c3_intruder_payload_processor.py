@@ -54,11 +54,11 @@ class BurpExtender(IBurpExtender, IIntruderPayloadGeneratorFactory, IIntruderPay
         return "C3 Encode Payload"
 
     def processPayload(self,currentPayload, originalPayload, baseValue):
-        # work on transform current payload in the payload list
+        # todo: work on transform current payload in the payload list
         print("Base Value: " + baseValue)
         payload = currentPayload
         
-        encodedPayload = self._helpers.urlEncode(self._helpers.base64Encode(self._helpers.bytesToString(payload)));
+        encodedPayload = TODO
 
         return encodedPayload
 
@@ -77,30 +77,14 @@ class IntruderPayloadGenerator(IIntruderPayloadGenerator):
     def hasMorePayloads(self):
         return self._payloadIndex < len(PAYLOADS)
 
+    # todo:
     # make an index for the decoded internal parameters
     # manually rebuild the request with payload inserted 
     # only move payload index when all internal parameters have been subbed in before
     def getNextPayload(self, baseValue):
         
         payload = ""
-        baseLength = len(self._baseList)
-        for i in range(baseLength):
-            if i == self._baseIndex:
-                name = self._baseList[i].split('=')[0]
-                payload += name + "=" + PAYLOADS[self._payloadIndex]
-
-            else:
-                payload += self._baseList[i]
-
-            if i != (baseLength - 1):
-                payload += "!!!"
         
-        self._baseIndex += 1
-
-        if self._baseIndex == 3 :
-            self._payloadIndex = self._payloadIndex + 1
-            self._baseIndex = 0            
-
         return payload
 
     def reset(self):

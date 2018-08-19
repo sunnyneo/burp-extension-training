@@ -17,9 +17,9 @@ class BurpExtender(IBurpExtender, IMessageEditorTabFactory):
     #
     def registerExtenderCallbacks(self, callbacks):
 
-        # set the parameter that you are interested in
+        # todo: set the parameter that you are interested in
         # probably can build a UI to set some options/parameter names   
-        self._parameterName = "input"
+        self._parameterName = "TODO"
 
         self._extensionName = "C3 Custom Tab"
 
@@ -78,17 +78,14 @@ class CustomTab(IMessageEditorTab):
         return self._txtInput.getComponent()
         
     def isEnabled(self, content, isRequest):
-        # check whether custom tab should be enabled based on..
+        # todo: check whether custom tab should be enabled based on..
         # whether it's a request and is the parameter name in the request?
         # probably can build ui to set request/response, parameter name
         paramFound = False 
         if isRequest == True:
             requestInfo = self._extender._helpers.analyzeRequest(content)
             parameters = requestInfo.getParameters()
-            for param in parameters:
-                if self._parameterName == param.getName():
-                    paramFound = True
-                    break;
+            
 
         return isRequest and paramFound
 
@@ -101,16 +98,16 @@ class CustomTab(IMessageEditorTab):
             self._txtInput.setEditable(False)
 
         else:
-            # todo decode
+            # todo: decode
             # content to be processed and displayed using setText()
             # set whether the content can be modified
             # dodgy encoding 11 + base64
             parameter = self._helpers.getRequestParameter(content, self._parameterName)
             parameterValue = parameter.getValue()
-            urlValue = self._helpers.urlDecode(parameterValue)
-            b64Value = self._helpers.base64Decode(urlValue)
+           
 
-            self._txtInput.setText(b64Value)
+
+            self._txtInput.setText(TODO)
             self._txtInput.setEditable(self._editable)
 
         # remember the displayed content
@@ -121,15 +118,12 @@ class CustomTab(IMessageEditorTab):
            # determine whether the user modified the deserialized data
            if self._txtInput.isTextModified():
 
-               # todo
+               # todo: reencode
                # get the text in textbox
-               # add 11 for dodgy encoding
                text = self._txtInput.getText()  
 
                parameterValue = self._helpers.bytesToString(text)
-               b64Value = self._helpers.base64Encode(parameterValue)
-               urlValue = self._helpers.urlEncode(b64Value)
-               
+
                # update the request with the new parameter value
                # IParameter buildParameter(PARAMETER NAME,
                #         PARAMETER VALUE,

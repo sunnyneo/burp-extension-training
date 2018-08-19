@@ -9,6 +9,7 @@ from burp import IScannerCheck
 from burp import IScanIssue
 from array import array
 
+#todo: set string to be triggered
 GREP_STRING = "Secret"
 GREP_STRING_BYTES = bytearray(GREP_STRING)
 INJ_TEST = bytearray("|")
@@ -60,12 +61,12 @@ class BurpExtender(IBurpExtender, IScannerCheck):
         if (len(matches) == 0):
             return None
 
-        # report the issue
+        # todo: set issue title to be reported
         return [CustomScanIssue(
             baseRequestResponse.getHttpService(),
             self._helpers.analyzeRequest(baseRequestResponse).getUrl(),
             [self._callbacks.applyMarkers(baseRequestResponse, None, matches)],
-            "SECRET FOUND",
+            "TODO TITLE",
             "The response contains the string: " + GREP_STRING,
             "Information")]
 
