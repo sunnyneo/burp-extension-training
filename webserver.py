@@ -11,7 +11,7 @@ import base64
 app = Flask(__name__)
 tokens = []
 tokens_lock = Lock()
-
+requestCounter = 0
 @app.route("/")
 def hello():
     return '''
@@ -31,7 +31,7 @@ def hello():
 #Error message for request without valid token
 @app.route("/1/")
 def challenge1():
-    requestCounter = 0
+    global requestCounter
     inputToken = request.headers.get('secret-token')
     if inputToken is None or not inputToken in tokens:
         print(tokens)
@@ -41,6 +41,7 @@ def challenge1():
         requestCounter += 1
         if requestCounter == 5:
             print("Resetting Tokens")
+            requestCounter = 0
             resetToken() 
         return generateResponse("Request successfully received.")
 
